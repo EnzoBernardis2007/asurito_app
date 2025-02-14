@@ -1,9 +1,41 @@
-import { View, Text } from "react-native"
+import { useState } from "react"
+import { View, Text, TextInput, Button } from "react-native"
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
+    const handleLogin = () => {
+        if (username === '' || password === '') {
+            setError('Por favor, preencha todos os campos')
+        }
+    }
+
     return(
         <View>
-            <Text>Faaaaaaaaaaaaala galera</Text>
+            <Text>Login</Text>
+
+            <Text>Nome</Text>
+            <TextInput
+                placeholder="Insira aqui..."
+                value={username}
+                onChangeText={setUsername}
+            />
+            
+            <Text>Senha</Text>
+            <TextInput
+                placeholder="Insira aqui..."
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+            />
+
+            <Button title="Entrar" onPress={handleLogin} />
+
+            <Button 
+                title="Não tem uma conta? crie agora!" 
+                onPress={() => navigation.navigate('Sign')}
+            />
         </View>
     )
 }
