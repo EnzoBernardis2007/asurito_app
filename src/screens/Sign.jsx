@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, Button, ScrollView, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, TextInput, Button, ScrollView } from 'react-native'
+import { Picker } from '@react-native-picker/picker'
 
 const Field = ({ name, value, onChange }) => {
     return (
@@ -33,14 +34,32 @@ export default function Sign() {
         wins: '',
         defeats: '',
     })
+    const [genders, setGenders] = useState[[]]
 
     const handleChange = (key, value) => {
         setForm({ ...form, [key]: value })
     }
 
+    useEffect(() => {
+        const getGenders = async () => {
+            const response = fetch('http://localhost:3000/getGenders', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if(response.ok) {
+                const data = await response.json()
+                setGenders(data)
+            }
+        }
+
+        getGenders()
+    }, [])
+
     const handleSubmit = () => {
         console.log(form)
-        // Aqui você enviaria os dados para sua API
     }
 
     return (
@@ -50,7 +69,16 @@ export default function Sign() {
             <Field name="CPF" value={form.cpf} onChange={(value) => handleChange('cpf', value)} />
             <Field name="Nome Completo" value={form.fullLegalName} onChange={(value) => handleChange('fullLegalName', value)} />
             <Field name="Nome Social" value={form.preferedName} onChange={(value) => handleChange('preferedName', value)} />
-            <Field name="Gênero" value={form.genderName} onChange={(value) => handleChange('genderName', value)} />
+            {/*<Picker
+                selectedValue={selectedValue}
+                onValueChange={(value) => handleChange('genderName', value)}
+            >
+                {
+                    genders.map(x => {
+                        <Picker.Item label={x} value={x}/>
+                    })
+                }
+            </Picker>*/}
             <Field name="Aniversário" value={form.birthday} onChange={(value) => handleChange('birthday', value)} />
             <Field name="Altura" value={form.height} onChange={(value) => handleChange('height', value)} />
             <Field name="Peso" value={form.weight} onChange={(value) => handleChange('weight', value)} />

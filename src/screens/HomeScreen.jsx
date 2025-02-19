@@ -2,11 +2,23 @@ import { useState } from "react"
 import { View, Text, TextInput, Button } from "react-native"
 
 export default function HomeScreen({ navigation }) {
-    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const handleLogin = () => {
-        navigation.navigate('BottomNavigator')
+    const handleLogin = async () => {
+
+        const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+
+        if(response.ok) {
+            const data = await response.json()
+            navigation.navigate('BottomNavigator')
+        }
     }
 
     return(
@@ -16,8 +28,8 @@ export default function HomeScreen({ navigation }) {
             <Text>Nome</Text>
             <TextInput
                 placeholder="Insira aqui..."
-                value={username}
-                onChangeText={setUsername}
+                value={email}
+                onChangeText={setEmail}
             />
             
             <Text>Senha</Text>
