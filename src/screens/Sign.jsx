@@ -5,12 +5,12 @@ import { Picker } from '@react-native-picker/picker'
 const Field = ({ name, value, onChange }) => {
     return (
         <View>
-        <Text>{name}</Text>
-        <TextInput
-            value={value}
-            onChangeText={onChange}
-            placeholder={'Insira aqui...'}
-        />
+            <Text>{name}</Text>
+            <TextInput
+                value={value}
+                onChangeText={onChange}
+                placeholder={'Insira aqui...'}
+            />
         </View>
     )
 }
@@ -34,7 +34,7 @@ export default function Sign() {
         wins: '',
         defeats: '',
     })
-    const [genders, setGenders] = useState[[]]
+    const [genders, setGenders] = useState([])
 
     const handleChange = (key, value) => {
         setForm({ ...form, [key]: value })
@@ -42,16 +42,22 @@ export default function Sign() {
 
     useEffect(() => {
         const getGenders = async () => {
-            const response = fetch('http://localhost:3000/getGenders', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            try {
+                const response = await fetch(`http://localhost:3000/getGenders`)
 
-            if(response.ok) {
+                if (!response.ok) {
+                    throw new Error(`HTTP error, status ${response.status}`)
+                }
+
                 const data = await response.json()
-                setGenders(data)
+
+                if (Array.isArray(data.gendersList)) {
+                    setGenders(data.gendersList)
+                } else {
+                    console.error('gendersList não é um array', data)
+                }
+            } catch (error) {
+                console.log('Erro ao buscar os gêneros:', error)
             }
         }
 
@@ -69,16 +75,16 @@ export default function Sign() {
             <Field name="CPF" value={form.cpf} onChange={(value) => handleChange('cpf', value)} />
             <Field name="Nome Completo" value={form.fullLegalName} onChange={(value) => handleChange('fullLegalName', value)} />
             <Field name="Nome Social" value={form.preferedName} onChange={(value) => handleChange('preferedName', value)} />
-            {/*<Picker
-                selectedValue={selectedValue}
+            <Text>Gênero</Text>
+            <Picker
+                selectedValue={form.genderName}
                 onValueChange={(value) => handleChange('genderName', value)}
             >
-                {
-                    genders.map(x => {
-                        <Picker.Item label={x} value={x}/>
-                    })
-                }
-            </Picker>*/}
+                <Picker.Item label="Selecione..." value="" />
+                {genders.map((gender) => (
+                    <Picker.Item key={gender.name} label={gender.ptbr_name} value={gender.name} />
+                ))}
+            </Picker>
             <Field name="Aniversário" value={form.birthday} onChange={(value) => handleChange('birthday', value)} />
             <Field name="Altura" value={form.height} onChange={(value) => handleChange('height', value)} />
             <Field name="Peso" value={form.weight} onChange={(value) => handleChange('weight', value)} />
