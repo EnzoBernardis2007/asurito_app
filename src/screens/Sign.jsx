@@ -14,7 +14,7 @@ const Field = ({ name, value, onChange }) => {
     )
 }
 
-export default function AthleteForm() {
+export default function Sign() {
     const [form, setForm] = useState({
         email: '',
         password: '',

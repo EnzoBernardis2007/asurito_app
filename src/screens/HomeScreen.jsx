@@ -6,9 +6,7 @@ export default function HomeScreen({ navigation }) {
     const [password, setPassword] = useState('')
 
     const handleLogin = () => {
-        if (username === '' || password === '') {
-            setError('Por favor, preencha todos os campos')
-        }
+        navigation.navigate('BottomNavigator')
     }
 
     return(
